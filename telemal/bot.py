@@ -1,6 +1,8 @@
 import sys
 import requests
 
+from User import User
+
 
 class Bot:
     def __init__(self, token):
@@ -132,10 +134,26 @@ class Bot:
         url = f"https://api.telegram.org/bot{self.token}/getChatAdministrators?chat_id={chat_id}"
         response = requests.get(url)
 
-        status = response.json()["result"][0]
+        bot_status = response.json()["result"][0]
 
-        for key in status:
-            if key.startswith("can_") and status[key]:
+        for key in bot_status:
+            if key.startswith("can_") and bot_status[key]:
                 permissions.append(key)
 
-        return invite_link, sorted(permissions)
+        users_informations = response.json()["result"][1:]
+
+        users = []
+
+        for user in users_informations:
+            users.append(
+                User(
+                    id=user["user"]["id"],
+                    is_bot=user["user"]["is_bot"],
+                    status=user["status"],
+                    first_name=user["user"]["first_name"],
+                    username=user["user"].get("username"),
+                    is_anonymous=user["is_anonymous"],
+                )
+            )
+
+        return (invite_link, sorted(permissions), users)

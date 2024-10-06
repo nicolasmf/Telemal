@@ -95,6 +95,24 @@ def main_menu(token=None):
     main_menu(token)
 
 
+def print_channel_informations(bot: Bot, chat_id):
+    invite_link, permissions, users = bot.get_chat_information(chat_id)
+
+    for index, permission in enumerate(permissions):
+        if permission in ["can_send_messages", "can_delete_messages"]:
+            permissions[index] = f"\033[1m{permission}\033[0m"
+
+    print(f"[+] Chat ID: {chat_id}")
+    print(f"[+] Invite Link: {invite_link}")
+
+    print(f"[+] Permissions:", end=" ")
+    print(*permissions, sep=", ")
+
+    print(f"\n[+] Users: {len(users)}")
+    for user in users:
+        print(f"    - {user}")
+
+
 def channel_menu(bot: Bot, chat_id=None, chat_name=None):
     clear_screen()
 
@@ -119,17 +137,7 @@ def channel_menu(bot: Bot, chat_id=None, chat_name=None):
 
     print(f"[Channel: {chat_name}]\n")
 
-    invite_link, permissions = bot.get_chat_information(chat_id)
-
-    for index, permission in enumerate(permissions):
-        if permission in ["can_send_messages", "can_delete_messages"]:
-            permissions[index] = f"\033[1m{permission}\033[0m"
-
-    print(f"[+] Chat ID: {chat_id}")
-    print(f"[+] Invite Link: {invite_link}")
-    print(f"[+] Permissions:", end=" ")
-
-    print(*permissions, sep=", ")
+    print_channel_informations(bot, chat_id)
 
     print("")
 
