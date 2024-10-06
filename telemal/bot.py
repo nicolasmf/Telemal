@@ -181,3 +181,49 @@ class Bot:
             return True
         else:
             return False
+
+    def get_file_count(self, chat_id):
+        file_count_dict = {
+            "gif": 0,
+            "photo": 0,
+            "video": 0,
+            "sticker": 0,
+            "document": 0,
+            "voice-message": 0,
+        }
+
+        document_extensions = {}
+
+        for chat in self.json_updates["result"]:
+
+            if "message" not in chat:
+                continue
+
+            if str(chat["message"]["chat"]["id"]) != chat_id:
+                continue
+
+            if "photo" in chat["message"]:
+                file_count_dict["photo"] += 1
+
+            elif "animation" in chat["message"]:
+                file_count_dict["gif"] += 1
+
+            elif "document" in chat["message"]:
+                file_count_dict["document"] += 1
+                extension = chat["message"]["document"]["file_name"].split(".")[-1]
+
+                if extension in document_extensions:
+                    document_extensions[extension] += 1
+                else:
+                    document_extensions[extension] = 1
+
+            elif "voice" in chat["message"]:
+                file_count_dict["voice-message"] += 1
+
+            elif "sticker" in chat["message"]:
+                file_count_dict["sticker"] += 1
+
+            elif "video" in chat["message"]:
+                file_count_dict["video"] += 1
+
+        return file_count_dict, document_extensions

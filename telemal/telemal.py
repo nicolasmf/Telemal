@@ -2,6 +2,17 @@ import os
 import sys
 from bot import Bot
 
+LOGO = """
+████████╗███████╗██╗     ███████╗███╗   ███╗ █████╗ ██╗     
+╚══██╔══╝██╔════╝██║     ██╔════╝████╗ ████║██╔══██╗██║     
+   ██║   █████╗  ██║     █████╗  ██╔████╔██║███████║██║     
+   ██║   ██╔══╝  ██║     ██╔══╝  ██║╚██╔╝██║██╔══██║██║     
+   ██║   ███████╗███████╗███████╗██║ ╚═╝ ██║██║  ██║███████╗
+   ╚═╝   ╚══════╝╚══════╝╚══════╝╚═╝     ╚═╝╚═╝  ╚═╝╚══════╝
+    Telegram Bot Control Toolkit
+    
+"""
+
 
 def clear_screen():
     if os.name == "nt":
@@ -49,18 +60,8 @@ def chat_history(bot: Bot, chat_id):
 
 def main_menu(token=None):
     clear_screen()
-    logo = """
-████████╗███████╗██╗     ███████╗███╗   ███╗ █████╗ ██╗     
-╚══██╔══╝██╔════╝██║     ██╔════╝████╗ ████║██╔══██╗██║     
-   ██║   █████╗  ██║     █████╗  ██╔████╔██║███████║██║     
-   ██║   ██╔══╝  ██║     ██╔══╝  ██║╚██╔╝██║██╔══██║██║     
-   ██║   ███████╗███████╗███████╗██║ ╚═╝ ██║██║  ██║███████╗
-   ╚═╝   ╚══════╝╚══════╝╚══════╝╚═╝     ╚═╝╚═╝  ╚═╝╚══════╝
-    Telegram Bot Control Toolkit
-    
-    """
 
-    print(logo)
+    print(LOGO)
 
     if not token:
         token = input("[+] Enter bot token > ")
@@ -124,18 +125,7 @@ def channel_menu(bot: Bot, chat_id=None, chat_name=None):
     if not chat_name:
         chat_name = bot.chat_list[0].split(" > ")[0]
 
-    logo = """
-████████╗███████╗██╗     ███████╗███╗   ███╗ █████╗ ██╗     
-╚══██╔══╝██╔════╝██║     ██╔════╝████╗ ████║██╔══██╗██║     
-   ██║   █████╗  ██║     █████╗  ██╔████╔██║███████║██║     
-   ██║   ██╔══╝  ██║     ██╔══╝  ██║╚██╔╝██║██╔══██║██║     
-   ██║   ███████╗███████╗███████╗██║ ╚═╝ ██║██║  ██║███████╗
-   ╚═╝   ╚══════╝╚══════╝╚══════╝╚═╝     ╚═╝╚═╝  ╚═╝╚══════╝
-    Telegram Bot Control Toolkit
-    
-    """
-
-    print(logo)
+    print(LOGO)
 
     if not bot.is_in_channel(chat_id):
         print(f"[Channel: {chat_name}] - Bot is not in the channel anymore.\n")
@@ -174,14 +164,13 @@ def channel_menu(bot: Bot, chat_id=None, chat_name=None):
         print("1. List all messages.")
         print("2. Send a message.")
         print("3. Send a file.")
-        print("3. Download files.")
-        print("4. Delete all messages.")
-        print("5. Export all text messages.")
-        print("6. Leave channel.")
+        print("4. Download files.")
+        print("5. Delete all messages.")
+        print("6. Export all text messages.")
+        print("7. Leave channel.")
         print("0. Go back.")
 
         case = input("\n>>> ")
-        print()
 
         if case == "1":
             chat_history(bot, chat_id)
@@ -192,10 +181,12 @@ def channel_menu(bot: Bot, chat_id=None, chat_name=None):
         elif case == "3":
             print("Not implemented yet.")
         elif case == "4":
-            print("Not implemented yet.")
+            file_menu(bot, chat_id, chat_name)
         elif case == "5":
             print("Not implemented yet.")
         elif case == "6":
+            print("Not implemented yet.")
+        elif case == "7":
             bot.leave_channel(chat_id)
 
             input("\n[+] Press any key to go back...")
@@ -206,6 +197,57 @@ def channel_menu(bot: Bot, chat_id=None, chat_name=None):
             input("[+] Press any key to go back...")
 
     channel_menu(bot, chat_id, chat_name)
+
+
+def file_menu(bot: Bot, chat_id, chat_name):
+    clear_screen()
+
+    print(LOGO)
+
+    print("[File Download Menu] - [Channel: {chat_name}]\n")
+
+    file_count_dict, document_extensions = bot.get_file_count(chat_id)
+
+    file_count = sum(file_count_dict.values())
+
+    print(f"[+] Files Count: {file_count}")
+
+    if file_count == 0:
+        print("[-] No files found.\n")
+        input("[+] Press any key to go back...")
+        return channel_menu(bot, chat_id, chat_name)
+
+    print("[+] File Types:")
+    for file_type, count in file_count_dict.items():
+        if count > 0:
+            print(f"    - {file_type.capitalize()}: {count}")
+
+    if document_extensions:
+        print("[+] Document Extensions:")
+        for extension, count in document_extensions.items():
+            print(f"    - {extension}: {count}")
+
+    print("")
+    print("1. List all files.")
+    print("2. Download all files.")
+    print("3. Download specific file.")
+    print("0. Go back.")
+
+    case = input("\n>>> ")
+
+    if case == "1":
+        print("Not implemented yet.")
+    elif case == "2":
+        print("Not implemented yet.")
+    elif case == "3":
+        print("Not implemented yet.")
+    elif case == "0":
+        channel_menu(bot, chat_id, chat_name)
+    else:
+        print("[!] Invalid option.")
+        input("[+] Press any key to go back...")
+
+    file_menu(bot, chat_id, chat_name)
 
 
 main_menu()
