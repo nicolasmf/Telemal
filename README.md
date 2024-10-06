@@ -20,3 +20,4 @@ While threat hunting, you may come across a Telegram bot token embedded in an in
 
 - Add a possibility to input the bot's token and channel ID in arguments.
 - Create python package.
+- Fix bot acting like it's not in Private Conversation
