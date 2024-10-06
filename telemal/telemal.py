@@ -89,7 +89,15 @@ def main_menu(token=None):
         elif case == "0":
             sys.exit(0)
     else:
-        channel_menu(TelegramBot)
+        print(f"\n1. Go to channel: {TelegramBot.chat_list[0].split(' > ')[0]}")
+        print("0. Exit.")
+
+        case = input("\n>>> ")
+
+        if case == "1":
+            channel_menu(TelegramBot)
+        elif case == "0":
+            sys.exit(0)
 
     input("\n[+] Press any key to go back...")
 
@@ -145,7 +153,7 @@ def channel_menu(bot: Bot, chat_id=None, chat_name=None):
 
             input("\n[+] Press any key to go back...")
         elif case == "2":
-            print("Not implemented yet.")
+            file_menu(bot, chat_id, chat_name)
         elif case == "3":
             print("Not implemented yet.")
         elif case == "0":
