@@ -138,4 +138,4 @@ class Bot:
             if key.startswith("can_") and status[key]:
                 permissions.append(key)
 
-        return invite_link, permissions
+        return invite_link, sorted(permissions)

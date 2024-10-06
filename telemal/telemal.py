@@ -129,7 +129,7 @@ def channel_menu(bot: Bot, chat_id=None, chat_name=None):
     print(f"[+] Invite Link: {invite_link}")
     print(f"[+] Permissions:", end=" ")
 
-    print(*sorted(permissions), sep=", ")
+    print(*permissions, sep=", ")
 
     print("")
 
