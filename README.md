@@ -19,5 +19,4 @@ While threat hunting, you may come across a Telegram bot token embedded in an in
 ## TODO
 
 - Add a possibility to input the bot's token and channel ID in arguments.
-- Add support for channels the bot is not in anymore.
 - Create python package.
