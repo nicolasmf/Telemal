@@ -168,7 +168,7 @@ class Bot:
             print("[-] Couldn't leave the chat.")
 
     def is_in_channel(self, chat_id):
-        url = f"https://api.telegram.org/bot{self.token}/getChatMember?chat_id={chat_id}&user_id={self.id}"
+        url = f"https://api.telegram.org/bot{self.token}/getChatAdministrators?chat_id={chat_id}"
         response = requests.get(url)
 
         if response.json()["ok"]:
