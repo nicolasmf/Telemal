@@ -134,10 +134,6 @@ class Bot:
         url = f"https://api.telegram.org/bot{self.token}/getChatAdministrators?chat_id={chat_id}"
         response = requests.get(url)
 
-        if not response.json()["ok"]:
-            print("[-] Error: Couldn't get chat administrators.")
-            return invite_link, permissions, []
-
         bot_status = response.json()["result"][0]
 
         for key in bot_status:
@@ -170,3 +166,12 @@ class Bot:
             print("[+] Successfully left the chat.")
         else:
             print("[-] Couldn't leave the chat.")
+
+    def is_in_channel(self, chat_id):
+        url = f"https://api.telegram.org/bot{self.token}/getChatMember?chat_id={chat_id}&user_id={self.id}"
+        response = requests.get(url)
+
+        if response.json()["ok"]:
+            return True
+        else:
+            return False

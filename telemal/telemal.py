@@ -102,7 +102,7 @@ def print_channel_informations(bot: Bot, chat_id):
         if permission in ["can_send_messages", "can_delete_messages"]:
             permissions[index] = f"\033[1m{permission}\033[0m"
 
-    print(f"[+] Chat ID: {chat_id}")
+    print(f"[+] Channel ID: {chat_id}")
     print(f"[+] Invite Link: {invite_link}")
 
     print(f"[+] Permissions:", end=" ")
@@ -135,45 +135,76 @@ def channel_menu(bot: Bot, chat_id=None, chat_name=None):
 
     print(logo)
 
-    print(f"[Channel: {chat_name}]\n")
+    if not bot.is_in_channel(chat_id):
+        print(f"[Channel: {chat_name}] - Bot is not in the channel anymore.\n")
 
-    print_channel_informations(bot, chat_id)
+        print(f"[+] Channel ID: {chat_id}\n")
 
-    print("")
+        print("1. List all messages.")
+        print("2. Download files.")
+        print("3. Export all text messages.")
+        print("4. Rejoin channel.")
+        print("0. Go back.")
 
-    print("1. List all messages.")
-    print("2. Send a message.")
-    print("3. Send a file.")
-    print("3. Download files.")
-    print("4. Delete all messages.")
-    print("5. Export all text messages.")
-    print("6. Leave channel.")
-    print("0. Go back.")
+        case = input("\n>>> ")
+        print()
 
-    case = input("\n>>> ")
-    print()
+        if case == "1":
+            chat_history(bot, chat_id)
 
-    if case == "1":
-        chat_history(bot, chat_id)
+            input("\n[+] Press any key to go back...")
+        elif case == "2":
+            print("Not implemented yet.")
+        elif case == "3":
+            print("Not implemented yet.")
+        elif case == "4":
+            print("Not implemented yet.")
+        elif case == "0":
+            main_menu(bot.token)
+        else:
+            print("[!] Invalid option.")
+            input("[+] Press any key to go back...")
 
-        input("\n[+] Press any key to go back...")
-    elif case == "2":
-        print("Not implemented yet.")
-    elif case == "3":
-        print("Not implemented yet.")
-    elif case == "4":
-        print("Not implemented yet.")
-    elif case == "5":
-        print("Not implemented yet.")
-    elif case == "6":
-        bot.leave_channel(chat_id)
-
-        input("\n[+] Press any key to go back...")
-    elif case == "0":
-        main_menu(bot.token)
     else:
-        print("[!] Invalid option.")
-        input("[+] Press any key to go back...")
+        print(f"[Channel: {chat_name}]\n")
+
+        print_channel_informations(bot, chat_id)
+
+        print("")
+
+        print("1. List all messages.")
+        print("2. Send a message.")
+        print("3. Send a file.")
+        print("3. Download files.")
+        print("4. Delete all messages.")
+        print("5. Export all text messages.")
+        print("6. Leave channel.")
+        print("0. Go back.")
+
+        case = input("\n>>> ")
+        print()
+
+        if case == "1":
+            chat_history(bot, chat_id)
+
+            input("\n[+] Press any key to go back...")
+        elif case == "2":
+            print("Not implemented yet.")
+        elif case == "3":
+            print("Not implemented yet.")
+        elif case == "4":
+            print("Not implemented yet.")
+        elif case == "5":
+            print("Not implemented yet.")
+        elif case == "6":
+            bot.leave_channel(chat_id)
+
+            input("\n[+] Press any key to go back...")
+        elif case == "0":
+            main_menu(bot.token)
+        else:
+            print("[!] Invalid option.")
+            input("[+] Press any key to go back...")
 
     channel_menu(bot, chat_id, chat_name)
 
