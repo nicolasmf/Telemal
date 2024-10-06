@@ -165,6 +165,10 @@ def channel_menu(bot: Bot, chat_id=None, chat_name=None):
         print("Not implemented yet.")
     elif case == "5":
         print("Not implemented yet.")
+    elif case == "6":
+        bot.leave_channel(chat_id)
+
+        input("\n[+] Press any key to go back...")
     elif case == "0":
         main_menu(bot.token)
     else:

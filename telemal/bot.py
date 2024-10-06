@@ -134,6 +134,10 @@ class Bot:
         url = f"https://api.telegram.org/bot{self.token}/getChatAdministrators?chat_id={chat_id}"
         response = requests.get(url)
 
+        if not response.json()["ok"]:
+            print("[-] Error: Couldn't get chat administrators.")
+            return invite_link, permissions, []
+
         bot_status = response.json()["result"][0]
 
         for key in bot_status:
@@ -157,3 +161,12 @@ class Bot:
             )
 
         return (invite_link, sorted(permissions), users)
+
+    def leave_channel(self, chat_id):
+        url = f"https://api.telegram.org/bot{self.token}/leaveChat?chat_id={chat_id}"
+        response = requests.get(url)
+
+        if response.json()["ok"]:
+            print("[+] Successfully left the chat.")
+        else:
+            print("[-] Couldn't leave the chat.")
