@@ -14,7 +14,7 @@ While threat hunting, you may come across a Telegram bot token embedded in an in
 - [ ] Download files.
 - [ ] Delete all messages.
 - [ ] Export all text messages.
-- [ ] Leave channel.
+- [x] Leave channel.
 
 ## TODO
 
