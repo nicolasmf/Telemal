@@ -1,3 +1,4 @@
+import os
 import sys
 import requests
 
@@ -227,3 +228,76 @@ class Bot:
                 file_count_dict["video"] += 1
 
         return file_count_dict, document_extensions
+
+    def download_file(self, file_information, chat_id):
+
+        file_id = file_information[0]
+        file_name = file_information[1]
+        if file_information[2]:
+            file_name = f"{file_name}.{file_information[2]}"
+
+        url = f"https://api.telegram.org/bot{self.token}/getFile?file_id={file_id}"
+        response = requests.get(url)
+
+        if not response.json()["ok"]:
+            print("[-] File exceeded maximum size.")
+            return
+
+        file_path = response.json()["result"]["file_path"]
+
+        download_url = f"https://api.telegram.org/file/bot{self.token}/{file_path}"
+
+        if not os.path.exists(chat_id):
+            os.makedirs(chat_id)
+
+        try:
+            response = requests.get(download_url)
+            response.raise_for_status()
+
+            with open(f"./{chat_id}/{file_name}", "wb") as file:
+                file.write(response.content)
+            print(f"File downloaded successfully: {file_name}")
+        except Exception as e:
+            print(f"Error downloading file: {e}")
+
+    def download_all_files(self, chat_id):
+
+        file_informations = []
+
+        for chat in self.json_updates["result"]:
+
+            if "message" not in chat:
+                continue
+
+            if str(chat["message"]["chat"]["id"]) != chat_id:
+                continue
+
+            if "photo" in chat["message"]:
+                photo = chat["message"]["photo"][-1]
+                file_informations.append(
+                    [photo["file_id"], photo["file_unique_id"], "png"]
+                )
+
+            elif "animation" in chat["message"]:
+                continue
+
+            elif "document" in chat["message"]:
+                document = chat["message"]["document"]
+                file_informations.append(
+                    [document["file_id"], document["file_name"], None]
+                )
+
+            elif "voice" in chat["message"]:
+                voice = chat["message"]["voice"]
+                file_informations.append(
+                    [voice["file_id"], voice["file_unique_id"], "mp3"]
+                )
+
+            elif "video" in chat["message"]:
+                video = chat["message"]["video"]
+                file_informations.append(
+                    [video["file_id"], video["file_unique_id"], "mp4"]
+                )
+
+        for file_information in file_informations:
+            self.download_file(file_information, chat_id)

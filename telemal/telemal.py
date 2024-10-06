@@ -212,7 +212,7 @@ def file_menu(bot: Bot, chat_id, chat_name):
 
     print(LOGO)
 
-    print("[File Download Menu] - [Channel: {chat_name}]\n")
+    print(f"[File Download Menu] - Channel: {chat_name}\n")
 
     file_count_dict, document_extensions = bot.get_file_count(chat_id)
 
@@ -236,25 +236,22 @@ def file_menu(bot: Bot, chat_id, chat_name):
             print(f"    - {extension}: {count}")
 
     print("")
-    print("1. List all files.")
-    print("2. Download all files.")
-    print("3. Download specific file.")
+    print("1. Download all files.")
+    print("2. Download specific file.")
     print("0. Go back.")
 
     case = input("\n>>> ")
 
     if case == "1":
-        print("Not implemented yet.")
+        bot.download_all_files(chat_id)
     elif case == "2":
-        print("Not implemented yet.")
-    elif case == "3":
         print("Not implemented yet.")
     elif case == "0":
         channel_menu(bot, chat_id, chat_name)
     else:
         print("[!] Invalid option.")
-        input("[+] Press any key to go back...")
 
+    input("[+] Press any key to go back...")
     file_menu(bot, chat_id, chat_name)
 
 
