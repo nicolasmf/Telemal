@@ -96,7 +96,7 @@ def main_menu(token=None):
 
 
 def print_channel_informations(bot: Bot, chat_id):
-    invite_link, permissions, users = bot.get_chat_information(chat_id)
+    invite_link, permissions, admins = bot.get_chat_information(chat_id)
 
     for index, permission in enumerate(permissions):
         if permission in ["can_send_messages", "can_delete_messages"]:
@@ -108,9 +108,11 @@ def print_channel_informations(bot: Bot, chat_id):
     print(f"[+] Permissions:", end=" ")
     print(*permissions, sep=", ")
 
-    print(f"\n[+] Users: {len(users)}")
-    for user in users:
-        print(f"    - {user}")
+    print(f"\n[+] Users: {bot.get_user_count(chat_id)}")
+
+    print(f"[+] Administrators: {len(admins)}")
+    for admin in admins:
+        print(f"    - {admin}")
 
 
 def channel_menu(bot: Bot, chat_id=None, chat_name=None):
@@ -143,7 +145,6 @@ def channel_menu(bot: Bot, chat_id=None, chat_name=None):
         print("1. List all messages.")
         print("2. Download files.")
         print("3. Export all text messages.")
-        print("4. Rejoin channel.")
         print("0. Go back.")
 
         case = input("\n>>> ")
@@ -156,8 +157,6 @@ def channel_menu(bot: Bot, chat_id=None, chat_name=None):
         elif case == "2":
             print("Not implemented yet.")
         elif case == "3":
-            print("Not implemented yet.")
-        elif case == "4":
             print("Not implemented yet.")
         elif case == "0":
             main_menu(bot.token)

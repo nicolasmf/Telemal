@@ -140,12 +140,12 @@ class Bot:
             if key.startswith("can_") and bot_status[key]:
                 permissions.append(key)
 
-        users_informations = response.json()["result"][1:]
+        users_informations = response.json()["result"]
 
-        users = []
+        admins = []
 
         for user in users_informations:
-            users.append(
+            admins.append(
                 User(
                     id=user["user"]["id"],
                     is_bot=user["user"]["is_bot"],
@@ -156,7 +156,13 @@ class Bot:
                 )
             )
 
-        return (invite_link, sorted(permissions), users)
+        return (invite_link, sorted(permissions), admins)
+
+    def get_user_count(self, chat_id):
+        url = f"https://api.telegram.org/bot{self.token}/getChatMembersCount?chat_id={chat_id}"
+        response = requests.get(url)
+
+        return response.json()["result"]
 
     def leave_channel(self, chat_id):
         url = f"https://api.telegram.org/bot{self.token}/leaveChat?chat_id={chat_id}"
