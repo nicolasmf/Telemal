@@ -6,7 +6,7 @@ While threat hunting, you may come across a Telegram bot token embedded in an in
 
 ## Features
 
-- [ ] List all channels the bot is part of. (UI/UX In process) 
+- [x] List all channels the bot is part of. 
 - [x] Get basic information on a channel.
 - [x] List all messages on a channel.
 - [ ] Send a message.
