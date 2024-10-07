@@ -260,7 +260,7 @@ class Bot:
         except Exception as e:
             print(f"Error downloading file: {e}")
 
-    def download_all_files(self, chat_id):
+    def download_all_files(self, chat_id, file_type=None):
 
         file_informations = []
 
@@ -272,32 +272,75 @@ class Bot:
             if str(chat["message"]["chat"]["id"]) != chat_id:
                 continue
 
-            if "photo" in chat["message"]:
-                photo = chat["message"]["photo"][-1]
-                file_informations.append(
-                    [photo["file_id"], photo["file_unique_id"], "png"]
-                )
+            if file_type == "documents":
 
-            elif "animation" in chat["message"]:
-                continue
+                if "photo" in chat["message"]:
+                    continue
 
-            elif "document" in chat["message"]:
-                document = chat["message"]["document"]
-                file_informations.append(
-                    [document["file_id"], document["file_name"], None]
-                )
+                elif "animation" in chat["message"]:
+                    continue
 
-            elif "voice" in chat["message"]:
-                voice = chat["message"]["voice"]
-                file_informations.append(
-                    [voice["file_id"], voice["file_unique_id"], "mp3"]
-                )
+                elif "voice" in chat["message"]:
+                    continue
 
-            elif "video" in chat["message"]:
-                video = chat["message"]["video"]
-                file_informations.append(
-                    [video["file_id"], video["file_unique_id"], "mp4"]
-                )
+                elif "video" in chat["message"]:
+                    continue
+
+                elif "document" in chat["message"]:
+                    document = chat["message"]["document"]
+                    file_informations.append(
+                        [document["file_id"], document["file_name"], None]
+                    )
+
+            elif file_type == "media":
+                if "photo" in chat["message"]:
+                    photo = chat["message"]["photo"][-1]
+                    file_informations.append(
+                        [photo["file_id"], photo["file_unique_id"], "png"]
+                    )
+
+                elif "animation" in chat["message"]:
+                    continue
+
+                elif "voice" in chat["message"]:
+                    voice = chat["message"]["voice"]
+                    file_informations.append(
+                        [voice["file_id"], voice["file_unique_id"], "mp3"]
+                    )
+
+                elif "video" in chat["message"]:
+                    video = chat["message"]["video"]
+                    file_informations.append(
+                        [video["file_id"], video["file_unique_id"], "mp4"]
+                    )
+
+            else:
+                if "photo" in chat["message"]:
+                    photo = chat["message"]["photo"][-1]
+                    file_informations.append(
+                        [photo["file_id"], photo["file_unique_id"], "png"]
+                    )
+
+                elif "animation" in chat["message"]:
+                    continue
+
+                elif "voice" in chat["message"]:
+                    voice = chat["message"]["voice"]
+                    file_informations.append(
+                        [voice["file_id"], voice["file_unique_id"], "mp3"]
+                    )
+
+                elif "video" in chat["message"]:
+                    video = chat["message"]["video"]
+                    file_informations.append(
+                        [video["file_id"], video["file_unique_id"], "mp4"]
+                    )
+
+                elif "document" in chat["message"]:
+                    document = chat["message"]["document"]
+                    file_informations.append(
+                        [document["file_id"], document["file_name"], None]
+                    )
 
         for file_information in file_informations:
             self.download_file(file_information, chat_id)

@@ -237,19 +237,53 @@ def file_menu(bot: Bot, chat_id, chat_name):
 
     print("")
     print("1. Download all files.")
-    print("2. Download specific file.")
-    print("0. Go back.")
 
-    case = input("\n>>> ")
+    if document_extensions:
+        print("2. Download all documents.")
+        if file_count_dict["photo"] > 0 or file_count_dict["video"] > 0:
+            print("3. Download all media.")
+            print("0. Go back.")
 
-    if case == "1":
-        bot.download_all_files(chat_id)
-    elif case == "2":
-        print("Not implemented yet.")
-    elif case == "0":
-        channel_menu(bot, chat_id, chat_name)
-    else:
-        print("[!] Invalid option.")
+            case = input("\n>>> ")
+
+            if case == "1":
+                bot.download_all_files(chat_id)
+            elif case == "2":
+                bot.download_all_files(chat_id, "document")
+            elif case == "3":
+                bot.download_all_files(chat_id, "media")
+            elif case == "0":
+                channel_menu(bot, chat_id, chat_name)
+            else:
+                print("[!] Invalid option.")
+        else:
+            print("0. Go back.")
+
+            case = input("\n>>> ")
+
+            if case == "1":
+                bot.download_all_files(chat_id)
+            elif case == "2":
+                bot.download_all_files(chat_id, "document")
+            elif case == "0":
+                channel_menu(bot, chat_id, chat_name)
+            else:
+                print("[!] Invalid option.")
+
+    elif file_count_dict["photo"] > 0 or file_count_dict["video"] > 0:
+        print("2. Download all media.")
+        print("0. Go back.")
+
+        case = input("\n>>> ")
+
+        if case == "1":
+            bot.download_all_files(chat_id)
+        elif case == "2":
+            bot.download_all_files(chat_id, "media")
+        elif case == "0":
+            channel_menu(bot, chat_id, chat_name)
+        else:
+            print("[!] Invalid option.")
 
     input("[+] Press any key to go back...")
     file_menu(bot, chat_id, chat_name)
