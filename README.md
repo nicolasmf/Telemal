@@ -11,7 +11,6 @@ While threat hunting, you may come across a Telegram bot token embedded in an in
 - [x] List all messages on a channel.
 - [x] Download files.
 - [x] Leave channel.
-- [ ] Update chats option in main menu
 - [ ] Send a message.
 - [ ] Send a file.
 - [ ] Delete all messages.
