@@ -71,23 +71,30 @@ def main_menu(token=None):
 
     print("[Main Menu]\n")
 
-    print(f"[+] Bot {TelegramBot.first_name} loaded successfully.")
+    print(
+        f"[+] Bot {TelegramBot.first_name} ({TelegramBot.username}) loaded successfully."
+    )
 
     if TelegramBot.chat_count > 1:
         print(f"\033[1m[!] Bot is part of {TelegramBot.chat_count} channels\033[0m\n")
 
-        print("1. List all channels the bot is in.")
-        print("2. Enter a chat id.")
-        print("0. Exit.")
+        for i, chat in enumerate(TelegramBot.chat_list):
+            print(f"{i+1}. Go to channel : {chat.split(' > ')[0]}")
 
-        case = input("\n>>> ")
+        print("0. Exit.\n")
 
-        if case == "1":
-            list_chats(TelegramBot)
-        elif case == "2":
-            print("Not implemented yet.")
-        elif case == "0":
+        case = input(">>> ")
+
+        if case == "0":
             sys.exit(0)
+        elif not case.isdigit():
+            print("[!] Invalid option.")
+        elif int(case) <= TelegramBot.chat_count:
+            chat_id = TelegramBot.chat_list[int(case) - 1].split(" > ")[1]
+            chat_name = TelegramBot.chat_list[int(case) - 1].split(" > ")[0]
+            channel_menu(TelegramBot, chat_id, chat_name)
+        else:
+            print("[!] Invalid option.")
     else:
         print(f"\n1. Go to channel: {TelegramBot.chat_list[0].split(' > ')[0]}")
         print("0. Exit.")

@@ -8,7 +8,7 @@ from User import User
 class Bot:
     def __init__(self, token):
         self.token = token
-        self.first_name = self.get_me(token)
+        self.first_name, self.username = self.get_me(token)
         self.json_updates = self.get_updates(token)
         self.chat_count = len(self.get_chats())
         self.chat_list = self.get_chats()
@@ -22,8 +22,9 @@ class Bot:
             sys.exit(1)
 
         first_name = response.json()["result"]["first_name"]
+        username = response.json()["result"]["username"]
 
-        return first_name
+        return first_name, username
 
     def get_updates(self, token):
         url = f"https://api.telegram.org/bot{token}/getUpdates"
