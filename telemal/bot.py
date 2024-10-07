@@ -345,3 +345,11 @@ class Bot:
 
         for file_information in file_informations:
             self.download_file(file_information, chat_id)
+
+    def update(self):
+        new_json_updates = self.get_updates(self.token)
+        if new_json_updates == self.json_updates:
+            return False
+        else:
+            self.json_updates = new_json_updates
+            return True

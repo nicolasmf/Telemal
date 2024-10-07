@@ -81,18 +81,22 @@ def main_menu(token=None):
         for i, chat in enumerate(TelegramBot.chat_list):
             print(f"{i+1}. Go to channel : {chat.split(' > ')[0]}")
 
+        print(f"{TelegramBot.chat_count + 1}. Get channels updates.")
         print("0. Exit.\n")
 
         case = input(">>> ")
 
         if case == "0":
             sys.exit(0)
-        elif not case.isdigit():
-            print("[!] Invalid option.")
-        elif int(case) <= TelegramBot.chat_count:
+        elif case.isdigit() and int(case) <= TelegramBot.chat_count:
             chat_id = TelegramBot.chat_list[int(case) - 1].split(" > ")[1]
             chat_name = TelegramBot.chat_list[int(case) - 1].split(" > ")[0]
             channel_menu(TelegramBot, chat_id, chat_name)
+        elif case == str(TelegramBot.chat_count + 1):
+            if TelegramBot.update():
+                print("[+] Channels updated successfully.")
+            else:
+                print("[-] No updates found.")
         else:
             print("[!] Invalid option.")
     else:
