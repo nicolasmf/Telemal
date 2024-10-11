@@ -2,3 +2,5 @@ venv
 test.py
 TODO.txt
 telemal/__pycache__
+.vscode
+forward_responses.txt

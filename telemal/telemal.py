@@ -1,6 +1,6 @@
 import os
 import sys
-from bot import Bot
+from Bot import Bot
 
 LOGO = """
 ████████╗███████╗██╗     ███████╗███╗   ███╗ █████╗ ██╗     
@@ -8,7 +8,7 @@ LOGO = """
    ██║   █████╗  ██║     █████╗  ██╔████╔██║███████║██║     
    ██║   ██╔══╝  ██║     ██╔══╝  ██║╚██╔╝██║██╔══██║██║     
    ██║   ███████╗███████╗███████╗██║ ╚═╝ ██║██║  ██║███████╗
-   ╚═╝   ╚══════╝╚══════╝╚══════╝╚═╝     ╚═╝╚═╝  ╚═╝╚══════╝
+   ╚═╝   ╚══════╝╚══════╝╚══════╝╚═╝     ╚═╝╚═╝  ╚═╝╚══════╝ V1.0
     Telegram Bot Control Toolkit
     
 """
@@ -52,13 +52,12 @@ def list_chats(bot: Bot):
 
 
 def chat_history(bot: Bot, chat_id):
-    all_messages = bot.parse_messages(chat_id)
-
-    for message in all_messages:
+    messages = bot.channels[chat_id].get_messages()
+    for message in messages:
         print(message)
 
 
-def main_menu(token=None):
+def main_menu(token: str | None = None, bot: Bot | None = None):
     clear_screen()
 
     print(LOGO)
@@ -67,56 +66,83 @@ def main_menu(token=None):
         token = input("[+] Enter bot token > ")
         remove_last_lines()
 
-    TelegramBot = Bot(token)
+    if not bot:
+        bot = Bot(token)
 
     print("[Main Menu]\n")
 
-    print(
-        f"[+] Bot {TelegramBot.first_name} ({TelegramBot.username}) loaded successfully."
-    )
+    print(f"[+] Bot {bot.first_name} ({bot.username}) loaded successfully.")
 
-    if TelegramBot.chat_count > 1:
-        print(f"\033[1m[!] Bot is part of {TelegramBot.chat_count} channels\033[0m\n")
+    if bot.chat_count > 1:
+        print(f"\033[1m[!] Bot is part of {bot.chat_count} channels\033[0m\n")
 
-        for i, chat in enumerate(TelegramBot.chat_list):
+        for i, chat in enumerate(bot.chat_list):
             print(f"{i+1}. Go to channel : {chat.split(' > ')[0]}")
 
-        print(f"{TelegramBot.chat_count + 1}. Get channels updates.")
+        print(f"{bot.chat_count + 1}. Get channels updates.")
         print("0. Exit.\n")
 
         case = input(">>> ")
 
         if case == "0":
             sys.exit(0)
-        elif case.isdigit() and int(case) <= TelegramBot.chat_count:
-            chat_id = TelegramBot.chat_list[int(case) - 1].split(" > ")[1]
-            chat_name = TelegramBot.chat_list[int(case) - 1].split(" > ")[0]
-            channel_menu(TelegramBot, chat_id, chat_name)
-        elif case == str(TelegramBot.chat_count + 1):
-            if TelegramBot.update():
+        elif case.isdigit() and int(case) <= bot.chat_count:
+            chat_id = bot.chat_list[int(case) - 1].split(" > ")[1]
+            chat_name = bot.chat_list[int(case) - 1].split(" > ")[0]
+            channel_menu(bot, chat_id, chat_name)
+        elif case == str(bot.chat_count + 1):
+            if bot.update():
                 print("[+] Channels updated successfully.")
             else:
                 print("[-] No updates found.")
         else:
             print("[!] Invalid option.")
-    else:
-        print(f"\n1. Go to channel: {TelegramBot.chat_list[0].split(' > ')[0]}")
+    elif bot.chat_count == 1:
+        print(f"\n1. Go to channel: {bot.chat_list[0].split(' > ')[0]}")
         print("0. Exit.")
 
         case = input("\n>>> ")
 
         if case == "1":
-            channel_menu(TelegramBot)
+            channel_menu(bot)
         elif case == "0":
             sys.exit(0)
 
+    else:
+        print("[-] Bot is not part of any channel.\n")
+
+        print("1. Enter a channel ID.")
+        print("2. Get channels updates.")
+        print("0. Exit.")
+
+        case = input("\n>>> ")
+
+        if case == "0":
+            sys.exit(0)
+        elif case == "1":
+            chat_id = input("[+] Enter channel ID > ")
+            if not bot.is_in_channel(chat_id):
+                print("[-] Error: Bot is not in this channel.")
+            else:
+                channel_menu(bot, chat_id)
+        elif case == "2":
+            if bot.update():
+                print("[+] Channels updated successfully.")
+            else:
+                print("[-] No updates found.")
+        else:
+            print("[!] Invalid option")
+
     input("\n[+] Press any key to go back...")
 
-    main_menu(token)
+    main_menu(token, bot)
 
 
 def print_channel_informations(bot: Bot, chat_id):
-    invite_link, permissions, admins = bot.get_chat_information(chat_id)
+
+    invite_link = bot.channels[chat_id].invite_link
+    permissions = bot.channels[chat_id].bot_permissions
+    admins = bot.channels[chat_id].admins
 
     for index, permission in enumerate(permissions):
         if permission in ["can_send_messages", "can_delete_messages"]:
@@ -128,11 +154,20 @@ def print_channel_informations(bot: Bot, chat_id):
     print(f"[+] Permissions:", end=" ")
     print(*permissions, sep=", ")
 
-    print(f"\n[+] Users: {bot.get_user_count(chat_id)}")
+    print(f"\n[+] Users: {bot.channels[chat_id].user_count}")
 
     print(f"[+] Administrators: {len(admins)}")
     for admin in admins:
         print(f"    - {admin}")
+
+
+def send_message(bot: Bot, chat_id):
+    message = input("[+] Enter message > ")
+
+    if bot.send_message(chat_id, message):
+        print("[+] Message sent successfully.")
+    else:
+        print("[-] Error: Message could not be sent.")
 
 
 def channel_menu(bot: Bot, chat_id=None, chat_name=None):
@@ -141,8 +176,10 @@ def channel_menu(bot: Bot, chat_id=None, chat_name=None):
     if not chat_id:
         chat_id = bot.chat_list[0].split(" > ")[1]
 
+    bot.add_channel(chat_id)
+
     if not chat_name:
-        chat_name = bot.chat_list[0].split(" > ")[0]
+        chat_name = bot.channels[chat_id].name
 
     print(LOGO)
 
@@ -162,16 +199,17 @@ def channel_menu(bot: Bot, chat_id=None, chat_name=None):
         if case == "1":
             chat_history(bot, chat_id)
 
-            input("\n[+] Press any key to go back...")
         elif case == "2":
             file_menu(bot, chat_id, chat_name)
+
         elif case == "3":
             print("Not implemented yet.")
+
         elif case == "0":
-            main_menu(bot.token)
+            main_menu(bot.token, bot)
+
         else:
             print("[!] Invalid option.")
-            input("[+] Press any key to go back...")
 
     else:
         print(f"[Channel: {chat_name}]\n")
@@ -194,26 +232,43 @@ def channel_menu(bot: Bot, chat_id=None, chat_name=None):
         if case == "1":
             chat_history(bot, chat_id)
 
-            input("\n[+] Press any key to go back...")
         elif case == "2":
-            print("Not implemented yet.")
+            send_message(bot, chat_id)
+
         elif case == "3":
-            print("Not implemented yet.")
+            try:
+                file_path = input("Enter the path of the file to send > ")
+                if bot.send_file(chat_id, file_path):
+                    print("[+] File sent successfully.")
+                else:
+                    print("[-] Error: File could not be sent.")
+            except FileNotFoundError:
+                print("[-] Error: File not found.")
+
         elif case == "4":
             file_menu(bot, chat_id, chat_name)
+
         elif case == "5":
-            print("Not implemented yet.")
+            print(
+                "[?] This will only delete messages sent less than 48 hours ago, because of Telegram's limitations."
+            )
+            messages_count = bot.delete_all_messages(chat_id)
+            print(f"[+] {messages_count} messages deleted successfully.")
+
         elif case == "6":
-            print("Not implemented yet.")
+            bot.export_text_messages(chat_id)
+            print(f"[+] Messages exported to ./{chat_id}/messages.txt.")
+
         elif case == "7":
             bot.leave_channel(chat_id)
 
-            input("\n[+] Press any key to go back...")
         elif case == "0":
-            main_menu(bot.token)
+            main_menu(bot.token, bot)
+
         else:
             print("[!] Invalid option.")
-            input("[+] Press any key to go back...")
+
+    input("\n[+] Press any key to go back...")
 
     channel_menu(bot, chat_id, chat_name)
 
@@ -229,12 +284,12 @@ def file_menu(bot: Bot, chat_id, chat_name):
 
     file_count = sum(file_count_dict.values())
 
-    print(f"[+] Files Count: {file_count}")
-
     if file_count == 0:
         print("[-] No files found.\n")
         input("[+] Press any key to go back...")
         return channel_menu(bot, chat_id, chat_name)
+
+    print(f"[+] Files Count: {file_count}")
 
     print("[+] File Types:")
     for file_type, count in file_count_dict.items():
@@ -260,7 +315,7 @@ def file_menu(bot: Bot, chat_id, chat_name):
             if case == "1":
                 bot.download_all_files(chat_id)
             elif case == "2":
-                bot.download_all_files(chat_id, "document")
+                bot.download_all_files(chat_id, "documents")
             elif case == "3":
                 bot.download_all_files(chat_id, "media")
             elif case == "0":
@@ -275,7 +330,7 @@ def file_menu(bot: Bot, chat_id, chat_name):
             if case == "1":
                 bot.download_all_files(chat_id)
             elif case == "2":
-                bot.download_all_files(chat_id, "document")
+                bot.download_all_files(chat_id, "documents")
             elif case == "0":
                 channel_menu(bot, chat_id, chat_name)
             else:
@@ -300,4 +355,5 @@ def file_menu(bot: Bot, chat_id, chat_name):
     file_menu(bot, chat_id, chat_name)
 
 
-main_menu()
+if __name__ == "__main__":
+    main_menu()
