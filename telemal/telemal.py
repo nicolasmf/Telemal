@@ -99,17 +99,23 @@ def main_menu(token: str | None = None, bot: Bot | None = None):
             print("[!] Invalid option.")
     elif bot.chat_count == 1:
         print(f"\n1. Go to channel: {bot.chat_list[0].split(' > ')[0]}")
+        print("2. Get channels updates.")
         print("0. Exit.")
 
         case = input("\n>>> ")
 
         if case == "1":
             channel_menu(bot)
+        elif case == "2":
+            if bot.update():
+                print("[+] Channels updated successfully.")
+            else:
+                print("[-] No updates found.")
         elif case == "0":
             sys.exit(0)
 
     else:
-        print("[-] Bot is not part of any channel.\n")
+        print("[-] Couldn't find any channel.\n")
 
         print("1. Enter a channel ID.")
         print("2. Get channels updates.")
