@@ -6,6 +6,36 @@ from Channel import Channel
 
 
 class Bot:
+    """
+    Bot class to interact with Telegram Bot API.
+
+    Attributes:
+        token (str): Bot token.
+        first_name (str): Bot's first name.
+        username (str): Bot's username.
+        json_updates (dict): JSON response from getUpdates.
+        chat_count (int): Number of chats bot is part of.
+        chat_list (list): List of chats bot is part of.
+        commands (list): List of commands.
+        channels (dict): Dictionary of channels bot is part of.
+
+    Methods:
+        get_me: Get bot information.
+        get_updates: Get updates from bot.
+        update: Update bot's JSON updates.
+        get_chats: Get list of chats bot is part of.
+        add_channel: Add channel to bot's channels.
+        leave_channel: Leave a channel.
+        is_in_channel: Check if bot is part of a channel.
+        get_file_count: Get file count in a channel.
+        download_file: Download a file from a channel.
+        download_all_files: Download all files from a channel.
+        send_message: Send a message to a channel.
+        delete_message: Delete a message from a channel.
+        delete_all_messages: Delete all messages from a channel.
+        send_file: Send a file to a channel.
+        export_text_messages: Export text messages from a channel.
+    """
 
     token = ""
     first_name = ""
@@ -25,7 +55,17 @@ class Bot:
         self.commands = []
         self.channels = {}
 
-    def get_me(self, token):
+    def get_me(self, token: str) -> tuple[str, str]:
+        """
+        Get bot information.
+
+        Args:
+            token (str): Bot token.
+
+        Returns:
+            first_name (str): Bot's first name.
+            username (str): Bot's username."""
+
         url = f"https://api.telegram.org/bot{token}/getMe"
         response = requests.get(url)
 
@@ -38,12 +78,30 @@ class Bot:
 
         return first_name, username
 
-    def get_updates(self, token):
+    def get_updates(self, token: str) -> dict:
+        """
+        Get updates from bot.
+
+        Args:
+            token (str): Bot token.
+
+        Returns:
+            response.json(): JSON response from getUpdates.
+        """
+
         url = f"https://api.telegram.org/bot{token}/getUpdates"
         response = requests.get(url)
         return response.json()
 
-    def update(self):
+    def update(self) -> bool:
+        """
+        Update bot's JSON updates.
+
+        Returns:
+            True: If updates are found.
+            False: If no updates are found.
+        """
+
         new_json_updates = self.get_updates(self.token)
         if new_json_updates == self.json_updates:
             return False
@@ -52,6 +110,13 @@ class Bot:
             return True
 
     def get_chats(self) -> list[str]:
+        """
+        Get list of chats bot is part of.
+
+        Returns:
+            chats (list): List of chats bot is part of.
+        """
+
         if not self.json_updates["ok"]:
             print("[-] Error: Couldn't load chat history.")
             return [""]
@@ -73,23 +138,55 @@ class Bot:
 
         return chats
 
-    def add_channel(self, chat_id):
+    def add_channel(self, chat_id: str) -> bool:
+        """
+        Add channel to bot's channels.
+
+        Args:
+            chat_id (str): Chat ID.
+
+        Returns:
+            True: If channel is added successfully.
+            False: If channel is already in bot's channels.
+        """
+
         if self.is_in_channel(chat_id) and chat_id not in self.channels:
             self.channels[chat_id] = Channel(chat_id, self.token)
             return True
         else:
             return False
 
-    def leave_channel(self, chat_id):
+    def leave_channel(self, chat_id: str) -> bool:
+        """
+        Leave a channel.
+
+        Args:
+            chat_id (str): Chat ID.
+
+        Returns:
+            True: If channel is left successfully.
+            False: If not.
+        """
+
         url = f"https://api.telegram.org/bot{self.token}/leaveChat?chat_id={chat_id}"
         response = requests.get(url)
 
         if response.json()["ok"]:
-            print("[+] Successfully left the chat.")
+            return True
         else:
-            print("[-] Couldn't leave the chat.")
+            return False
 
-    def is_in_channel(self, chat_id):
+    def is_in_channel(self, chat_id: str) -> bool:
+        """
+        Check if bot is part of a channel.
+
+        Args:
+            chat_id (str): Chat ID.
+
+        Returns:
+            True: If bot is part of the channel.
+            False: If not.
+        """
 
         url = f"https://api.telegram.org/bot{self.token}/getChat?chat_id={chat_id}"
         response = requests.get(url)
@@ -104,7 +201,17 @@ class Bot:
         else:
             return False
 
-    def get_file_count(self, chat_id):
+    def get_file_count(self, chat_id: str) -> tuple[dict, dict]:
+        """
+        Get file count in a channel.
+
+        Args:
+            chat_id (str): Chat ID.
+
+        Returns:
+            file_count_dict (dict): Dictionary of file counts.
+        """
+
         file_count_dict = {
             "gif": 0,
             "photo": 0,
@@ -147,7 +254,14 @@ class Bot:
 
         return file_count_dict, document_extensions
 
-    def download_file(self, file_information, chat_id):
+    def download_file(self, file_information: tuple[str, str, str], chat_id: str):
+        """
+        Download a file from a channel.
+
+        Args:
+            file_information (tuple): File information.
+            chat_id (str): Chat ID.
+        """
 
         file_id = file_information[0]
         file_name = file_information[1]
@@ -178,7 +292,14 @@ class Bot:
         except Exception as e:
             print(f"Error downloading file: {e}")
 
-    def download_all_files(self, chat_id, file_type=None):
+    def download_all_files(self, chat_id: str, file_type: str | None = None):
+        """
+        Download all files from a channel.
+
+        Args:
+            chat_id (str): Chat ID.
+            file_type (str): File type.
+        """
 
         file_informations = []
 
@@ -260,13 +381,37 @@ class Bot:
         for file_information in file_informations:
             self.download_file(file_information, chat_id)
 
-    def send_message(self, chat_id, message):
+    def send_message(self, chat_id: str, message: str) -> bool:
+        """
+        Send a message to a channel.
+
+        Args:
+            chat_id (str): Chat ID.
+            message (str): Message.
+
+        Returns:
+            True: If message is sent successfully.
+            False: If not.
+        """
+
         url = f"https://api.telegram.org/bot{self.token}/sendMessage?chat_id={chat_id}&text={message}"
         response = requests.get(url)
 
         return response.json()["ok"]
 
-    def delete_message(self, chat_id, message_id):
+    def delete_message(self, chat_id: str, message_id: str) -> bool:
+        """
+        Delete a message from a channel.
+
+        Args:
+            chat_id (str): Chat ID.
+            message_id (str): Message ID.
+
+        Returns:
+            True: If message is deleted successfully.
+            False: If not.
+        """
+
         url = f"https://api.telegram.org/bot{self.token}/deleteMessage?chat_id={chat_id}&message_id={message_id}"
         response = requests.get(url)
 
@@ -274,9 +419,19 @@ class Bot:
             print(f"[-] Couldn't delete message: {message_id}")
             return False
 
-        return response.json()["ok"]
+        return True
 
-    def delete_all_messages(self, chat_id):
+    def delete_all_messages(self, chat_id: str) -> int:
+        """
+        Delete all messages from a channel.
+
+        Args:
+            chat_id (str): Chat ID.
+
+        Returns:
+            message_count (int): Number of messages deleted.
+        """
+
         messages = self.channels[chat_id].get_messages()
         message_count = 0
         for message in messages:
@@ -285,14 +440,37 @@ class Bot:
 
         return message_count
 
-    def send_file(self, chat_id, file_path):
+    def send_file(self, chat_id: str, file_path: str) -> bool:
+        """
+        Send a file to a channel.
+
+        Args:
+            chat_id (str): Chat ID.
+            file_path (str): File path.
+
+        Returns:
+            True: If file is sent successfully.
+            False: If not.
+        """
+
         url = f"https://api.telegram.org/bot{self.token}/sendDocument?chat_id={chat_id}"
         files = {"document": open(file_path, "rb")}
         response = requests.post(url, files=files)
 
         return response.json()["ok"]
 
-    def export_text_messages(self, chat_id):
+    def export_text_messages(self, chat_id: str) -> bool:
+        """
+        Export text messages from a channel.
+
+        Args:
+            chat_id (str): Chat ID.
+
+        Returns:
+            True: If messages are exported successfully.
+            False: If not.
+        """
+
         self.channels[chat_id].get_messages()
 
         messages = self.channels[chat_id].parsed_messages

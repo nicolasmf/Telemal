@@ -5,17 +5,42 @@ from datetime import datetime
 
 
 class Channel:
+    """Documentation for Channel class.
+
+    This class is used to represent a channel in Telegram.
+
+    Attributes:
+        id (str): The id of the channel.
+        token (str): The token of the bot.
+        bot_permissions (list): A list of all bot permissions in the channel.
+        name (str): The name of the channel.
+        all_messages (list): A list of all messages in the channel.
+        parsed_messages (list): A list of all parsed messages in the channel.
+        invite_link (str): The invite link of the channel.
+        admins (list): A list of all admins in the channel.
+        user_count (int): The number of users in the channel.
+        last_message_id (int): The id of the last message sent in the channel.
+
+    Methods:
+        get_messages(): Gets all messages in the channel.
+        parse_message(json_response): Parses a message from a json response.
+        get_last_message_id(): Gets the id of the last message sent in the channel.
+        delete_message(message_id): Deletes a message from the channel.
+        get_chat_information(): Gets information about the channel.
+        get_user_count(): Gets the number of users in the channel.
+
+    """
 
     id = ""
     token = ""
+    bot_permissions = []
+    name = ""
     all_messages = []
     parsed_messages = []
-    invite_link = ""
-    bot_permissions = []
-    admins = []
-    name = ""
-    user_count = 0
     last_message_id = 0
+    invite_link = ""
+    admins = []
+    user_count = 0
 
     def __init__(
         self,
@@ -32,7 +57,13 @@ class Channel:
         self.user_count: int = self.get_user_count()
         self.last_message_id = 0
 
-    def get_messages(self):
+    def get_messages(self) -> list[str]:
+        """
+        Gets all messages in the channel.
+
+        Returns:
+            A list of all parsed messages in the channel.
+        """
 
         parsed_message = []
 
@@ -41,7 +72,7 @@ class Channel:
 
         if last_message_id == -1:
             print("[-] Error: Couldn't get last message id.")
-            return
+            return [""]
 
         all_messages = []
 
@@ -96,7 +127,16 @@ class Channel:
 
         return self.parsed_messages
 
-    def parse_message(self, json_response):
+    def parse_message(self, json_response) -> str:
+        """
+        Parses a message from a json response.
+
+        Args:
+            json_response: A json response from the Telegram API.
+
+        Returns:
+            A string representing the parsed message.
+        """
 
         message = []
 
@@ -151,7 +191,13 @@ class Channel:
 
         return message
 
-    def get_last_message_id(self):
+    def get_last_message_id(self) -> int:
+        """
+        Gets the id of the last message sent in the channel.
+
+        Returns:
+            An integer representing the id of the last message sent in the channel.
+        """
         url = f"https://api.telegram.org/bot{self.token}/sendMessage?chat_id={self.id}&text=.&disable_notification=true"
         response = requests.get(url)
 
@@ -160,7 +206,17 @@ class Channel:
 
         return response.json()["result"]["message_id"]
 
-    def delete_message(self, message_id):
+    def delete_message(self, message_id) -> bool:
+        """
+        Deletes a message from the channel.
+
+        Args:
+            message_id: An integer representing the id of the message to delete.
+
+        Returns:
+            A boolean representing whether the message was deleted successfully.
+        """
+
         url = f"https://api.telegram.org/bot{self.token}/deleteMessage?chat_id={self.id}&message_id={message_id}"
         response = requests.get(url)
 
@@ -170,7 +226,14 @@ class Channel:
 
         return response.json()["ok"]
 
-    def get_chat_information(self):
+    def get_chat_information(self) -> tuple[str, list[str], list[User], str]:
+        """
+        Gets information about the channel.
+
+        Returns:
+            A tuple containing the channel's invite link, permissions, admins, and name.
+        """
+
         url = f"https://api.telegram.org/bot{self.token}/getChat?chat_id={self.id}"
         response = requests.get(url)
 
@@ -230,7 +293,14 @@ class Channel:
 
         return (invite_link, sorted(permissions), admins, chat_name)
 
-    def get_user_count(self):
+    def get_user_count(self) -> int:
+        """
+        Gets the number of users in the channel.
+
+        Returns:
+            An integer representing the number of users in the channel.
+        """
+
         url = f"https://api.telegram.org/bot{self.token}/getChatMembersCount?chat_id={self.id}"
         response = requests.get(url)
 

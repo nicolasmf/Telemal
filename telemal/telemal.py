@@ -27,31 +27,7 @@ def remove_last_lines(n=1):
         sys.stdout.write("\033[K")  # Clear to the end of the line
 
 
-def list_chats(bot: Bot):
-    chats = bot.chat_list
-
-    if len(chats) > 1:
-        print("[+] Multiple chats found. Please specify a chat id :")
-        for chat in chats:
-            print(f"    - {chat}")
-
-        chat_id = str(input("Chat ID > "))
-
-        while chat_id not in [chat.split(" > ")[1] for chat in chats]:
-            print("[-] Error: Invalid chat ID.")
-            chat_id = str(input("Chat ID > "))
-
-    else:
-        chat_id = chats[0]
-
-    chat_name = [
-        chat.split(" > ")[0] for chat in chats if chat.split(" > ")[1] == chat_id
-    ][0]
-
-    channel_menu(bot, chat_id, chat_name)
-
-
-def chat_history(bot: Bot, chat_id):
+def chat_history(bot: Bot, chat_id: str):
     messages = bot.channels[chat_id].get_messages()
     for message in messages:
         print(message)
@@ -144,7 +120,7 @@ def main_menu(token: str | None = None, bot: Bot | None = None):
     main_menu(token, bot)
 
 
-def print_channel_informations(bot: Bot, chat_id):
+def print_channel_informations(bot: Bot, chat_id: str):
 
     invite_link = bot.channels[chat_id].invite_link
     permissions = bot.channels[chat_id].bot_permissions
@@ -167,16 +143,7 @@ def print_channel_informations(bot: Bot, chat_id):
         print(f"    - {admin}")
 
 
-def send_message(bot: Bot, chat_id):
-    message = input("[+] Enter message > ")
-
-    if bot.send_message(chat_id, message):
-        print("[+] Message sent successfully.")
-    else:
-        print("[-] Error: Message could not be sent.")
-
-
-def channel_menu(bot: Bot, chat_id=None, chat_name=None):
+def channel_menu(bot: Bot, chat_id: str | None = None, chat_name: str | None = None):
     clear_screen()
 
     if not chat_id:
@@ -239,7 +206,12 @@ def channel_menu(bot: Bot, chat_id=None, chat_name=None):
             chat_history(bot, chat_id)
 
         elif case == "2":
-            send_message(bot, chat_id)
+            message = input("[+] Enter message > ")
+
+            if bot.send_message(chat_id, message):
+                print("[+] Message sent successfully.")
+            else:
+                print("[-] Error: Message could not be sent.")
 
         elif case == "3":
             try:
@@ -266,7 +238,10 @@ def channel_menu(bot: Bot, chat_id=None, chat_name=None):
             print(f"[+] Messages exported to ./{chat_id}/messages.txt.")
 
         elif case == "7":
-            bot.leave_channel(chat_id)
+            if bot.leave_channel(chat_id):
+                print("[+] Successfully left the chat.")
+            else:
+                print("[-] Couldn't leave the chat.")
 
         elif case == "0":
             main_menu(bot.token, bot)
@@ -279,7 +254,7 @@ def channel_menu(bot: Bot, chat_id=None, chat_name=None):
     channel_menu(bot, chat_id, chat_name)
 
 
-def file_menu(bot: Bot, chat_id, chat_name):
+def file_menu(bot: Bot, chat_id: str, chat_name: str):
     clear_screen()
 
     print(LOGO)
