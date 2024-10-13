@@ -1,3 +1,4 @@
+import json
 import os
 import sys
 import requests
@@ -48,23 +49,18 @@ class Bot:
 
     def __init__(self, token):
         self.token = token
-        self.first_name, self.username = self.get_me(token)
-        self.json_updates = self.get_updates(token)
-        self.chat_count = len(self.get_chats())
-        self.chat_list = self.get_chats()
-        self.commands = []
-        self.channels = {}
 
-    def get_me(self, token: str) -> tuple[str, str]:
+        self.get_updates(token)
+        self.get_me(token)
+        self.get_chats()
+
+    def get_me(self, token: str):
         """
         Get bot information.
 
         Args:
             token (str): Bot token.
-
-        Returns:
-            first_name (str): Bot's first name.
-            username (str): Bot's username."""
+        """
 
         url = f"https://api.telegram.org/bot{token}/getMe"
         response = requests.get(url)
@@ -76,7 +72,8 @@ class Bot:
         first_name = response.json()["result"]["first_name"]
         username = response.json()["result"]["username"]
 
-        return first_name, username
+        self.first_name = first_name
+        self.username = username
 
     def get_updates(self, token: str) -> dict:
         """
@@ -91,6 +88,9 @@ class Bot:
 
         url = f"https://api.telegram.org/bot{token}/getUpdates"
         response = requests.get(url)
+
+        self.json_updates = response.json()
+
         return response.json()
 
     def update(self) -> bool:
@@ -107,14 +107,12 @@ class Bot:
             return False
         else:
             self.json_updates = new_json_updates
+            self.get_chats()
             return True
 
-    def get_chats(self) -> list[str]:
+    def get_chats(self):
         """
         Get list of chats bot is part of.
-
-        Returns:
-            chats (list): List of chats bot is part of.
         """
 
         if not self.json_updates["ok"]:
@@ -136,7 +134,8 @@ class Bot:
         for chat in chats:
             self.add_channel(chat.split(" > ")[1])
 
-        return chats
+        self.chat_list = chats
+        self.chat_count = len(chats)
 
     def add_channel(self, chat_id: str) -> bool:
         """
@@ -415,11 +414,7 @@ class Bot:
         url = f"https://api.telegram.org/bot{self.token}/deleteMessage?chat_id={chat_id}&message_id={message_id}"
         response = requests.get(url)
 
-        if not response.json()["ok"]:
-            print(f"[-] Couldn't delete message: {message_id}")
-            return False
-
-        return True
+        return response.json()["ok"]
 
     def delete_all_messages(self, chat_id: str) -> int:
         """
@@ -432,11 +427,13 @@ class Bot:
             message_count (int): Number of messages deleted.
         """
 
-        messages = self.channels[chat_id].get_messages()
+        self.channels[chat_id].get_messages()
+        print("[+] Deleting all messages...")
+
         message_count = 0
-        for message in messages:
-            message_count += 1
-            self.delete_message(chat_id, message["message_id"])
+        for message in self.channels[chat_id].all_messages_ids:
+            if self.delete_message(chat_id, message):
+                message_count += 1
 
         return message_count
 

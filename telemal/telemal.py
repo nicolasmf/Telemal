@@ -230,8 +230,14 @@ def channel_menu(bot: Bot, chat_id: str | None = None, chat_name: str | None = N
             print(
                 "[?] This will only delete messages sent less than 48 hours ago, because of Telegram's limitations."
             )
+
             messages_count = bot.delete_all_messages(chat_id)
-            print(f"[+] {messages_count} messages deleted successfully.")
+            remove_last_lines()
+
+            if messages_count == 0:
+                print("[-] No messages deleted.")
+            else:
+                print(f"[+] {messages_count} messages deleted.")
 
         elif case == "6":
             bot.export_text_messages(chat_id)
