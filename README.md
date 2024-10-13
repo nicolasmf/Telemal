@@ -37,7 +37,6 @@ The tool first sends a message to retrieve the last message id. It then forwards
 
 ## TODO
 
-- Add a possibility to input the bot's token and channel ID in arguments.
 - Create python package.
 - Add a cache for messages.
 - Add tests :(
