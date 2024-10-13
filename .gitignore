@@ -7,3 +7,5 @@ forward_responses.txt
 build
 dist
 telemal.egg-info
+secrets.txt
+update_pypi.sh

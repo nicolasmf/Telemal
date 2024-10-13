@@ -4,6 +4,10 @@ While threat hunting, you may come across a Telegram bot token embedded in an in
 
 ![](./images/image.png)
 
+## Installation
+
+`pip install telemal`
+
 ## Features
 
 - List channels the bot is part of (Based on messages received in the last 24 hours). 

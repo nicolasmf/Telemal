@@ -10,7 +10,7 @@ LOGO = """
    ██║   █████╗  ██║     █████╗  ██╔████╔██║███████║██║     
    ██║   ██╔══╝  ██║     ██╔══╝  ██║╚██╔╝██║██╔══██║██║     
    ██║   ███████╗███████╗███████╗██║ ╚═╝ ██║██║  ██║███████╗
-   ╚═╝   ╚══════╝╚══════╝╚══════╝╚═╝     ╚═╝╚═╝  ╚═╝╚══════╝ V1.0
+   ╚═╝   ╚══════╝╚══════╝╚══════╝╚═╝     ╚═╝╚═╝  ╚═╝╚══════╝ V1.2
     Telegram Bot Control Toolkit
     
 """
@@ -377,7 +377,7 @@ def file_menu(bot: Bot, chat_id: str, chat_name: str):
     file_menu(bot, chat_id, chat_name)
 
 
-if __name__ == "__main__":
+def main():
     try:
         main_menu()
     except KeyboardInterrupt or EOFError:
