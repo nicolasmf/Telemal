@@ -38,11 +38,4 @@ The tool first sends a message to retrieve the last message id. It then forwards
 
 ![Teletracker vs Telemal](images/image2.png)
 
-
-## TODO
-
-- Create python package.
-- Add a cache for messages.
-- Add tests :(
-
 Don't hesitate to ask for more features :)
