@@ -170,10 +170,10 @@ def channel_menu(bot: Bot, chat_id: str | None = None, chat_name: str | None = N
         print()
 
         if case == "1":
-            chat_history(bot, chat_id)
+            print("Not implemented yet.")
 
         elif case == "2":
-            file_menu(bot, chat_id, chat_name)
+            print("Not implemented yet.")
 
         elif case == "3":
             print("Not implemented yet.")
