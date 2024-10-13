@@ -1,4 +1,5 @@
 import json
+import json
 import os
 import sys
 import requests
@@ -107,6 +108,7 @@ class Bot:
             return False
         else:
             self.json_updates = new_json_updates
+            self.get_chats()
             self.get_chats()
             return True
 
@@ -415,6 +417,7 @@ class Bot:
         response = requests.get(url)
 
         return response.json()["ok"]
+        return response.json()["ok"]
 
     def delete_all_messages(self, chat_id: str) -> int:
         """
@@ -431,6 +434,9 @@ class Bot:
         print("[+] Deleting all messages...")
 
         message_count = 0
+        for message in self.channels[chat_id].all_messages_ids:
+            if self.delete_message(chat_id, message):
+                message_count += 1
         for message in self.channels[chat_id].all_messages_ids:
             if self.delete_message(chat_id, message):
                 message_count += 1
