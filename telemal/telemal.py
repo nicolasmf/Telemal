@@ -94,7 +94,6 @@ def main_menu(token: str | None = None, bot: Bot | None = None):
 
         if case == "0":
             write_cache(bot)
-            print(bot.channels)
             sys.exit(0)
         elif case.isdigit() and int(case) <= bot.chat_count:
             chat_id = bot.chat_list[int(case) - 1].split(" > ")[1]
@@ -123,7 +122,6 @@ def main_menu(token: str | None = None, bot: Bot | None = None):
                 print("[-] No updates found.")
         elif case == "0":
             write_cache(bot)
-            print(bot.channels)
             sys.exit(0)
 
     else:
@@ -137,7 +135,6 @@ def main_menu(token: str | None = None, bot: Bot | None = None):
 
         if case == "0":
             write_cache(bot)
-            print(bot.channels)
             sys.exit(0)
         elif case == "1":
             chat_id = input("[+] Enter channel ID > ")
