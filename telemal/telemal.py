@@ -1,5 +1,7 @@
 import os
 import sys
+import pickle
+
 from Bot import Bot
 
 LOGO = """
@@ -12,6 +14,34 @@ LOGO = """
     Telegram Bot Control Toolkit
     
 """
+
+
+def write_cache(bot: Bot):
+
+    id = bot.token.split(":")[0]
+
+    if not os.path.exists(id):
+        os.makedirs(id)
+
+    with open(f"{id}/bot.pkl", "wb") as file:
+        pickle.dump(bot, file)
+
+    with open(f"{id}/channels.pkl", "wb") as file:
+        pickle.dump(bot.channels, file)
+
+
+def read_cache(token: str):
+
+    id = token.split(":")[0]
+
+    if os.path.exists(id):
+        with open(f"{id}/bot.pkl", "rb") as file:
+            bot = pickle.load(file)
+
+        with open(f"{id}/channels.pkl", "rb") as file:
+            bot.channels = pickle.load(file)
+
+        return bot
 
 
 def clear_screen():
@@ -42,6 +72,8 @@ def main_menu(token: str | None = None, bot: Bot | None = None):
         token = input("[+] Enter bot token > ")
         remove_last_lines()
 
+        bot = read_cache(token)
+
     if not bot:
         bot = Bot(token)
 
@@ -56,11 +88,13 @@ def main_menu(token: str | None = None, bot: Bot | None = None):
             print(f"{i+1}. Go to channel : {chat.split(' > ')[0]}")
 
         print(f"{bot.chat_count + 1}. Get channels updates.")
-        print("0. Exit.\n")
+        print("0. Exit and write cache.\n")
 
         case = input(">>> ")
 
         if case == "0":
+            write_cache(bot)
+            print(bot.channels)
             sys.exit(0)
         elif case.isdigit() and int(case) <= bot.chat_count:
             chat_id = bot.chat_list[int(case) - 1].split(" > ")[1]
@@ -76,7 +110,7 @@ def main_menu(token: str | None = None, bot: Bot | None = None):
     elif bot.chat_count == 1:
         print(f"\n1. Go to channel: {bot.chat_list[0].split(' > ')[0]}")
         print("2. Get channels updates.")
-        print("0. Exit.")
+        print("0. Exit and write cache.")
 
         case = input("\n>>> ")
 
@@ -88,6 +122,8 @@ def main_menu(token: str | None = None, bot: Bot | None = None):
             else:
                 print("[-] No updates found.")
         elif case == "0":
+            write_cache(bot)
+            print(bot.channels)
             sys.exit(0)
 
     else:
@@ -95,11 +131,13 @@ def main_menu(token: str | None = None, bot: Bot | None = None):
 
         print("1. Enter a channel ID.")
         print("2. Get channels updates.")
-        print("0. Exit.")
+        print("0. Exit and write cache.")
 
         case = input("\n>>> ")
 
         if case == "0":
+            write_cache(bot)
+            print(bot.channels)
             sys.exit(0)
         elif case == "1":
             chat_id = input("[+] Enter channel ID > ")
@@ -343,4 +381,8 @@ def file_menu(bot: Bot, chat_id: str, chat_name: str):
 
 
 if __name__ == "__main__":
-    main_menu()
+    try:
+        main_menu()
+    except KeyboardInterrupt or EOFError:
+        print("\n[-] Exiting...")
+        sys.exit(0)

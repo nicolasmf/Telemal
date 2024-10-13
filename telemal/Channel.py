@@ -51,14 +51,10 @@ class Channel:
     ):
         self.id = id
         self.token = bot_token
-        self.all_messages = []
-        self.all_messages_ids = []
-        self.parsed_messages = []
         self.invite_link, self.bot_permissions, self.admins, self.name = (
             self.get_chat_information()
         )
-        self.user_count: int = self.get_user_count()
-        self.last_message_id = 0
+        self.user_count = self.get_user_count()
 
     def get_messages(self) -> list[str]:
         """
