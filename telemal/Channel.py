@@ -15,6 +15,7 @@ class Channel:
         bot_permissions (list): A list of all bot permissions in the channel.
         name (str): The name of the channel.
         all_messages (list): A list of all messages in the channel.
+        all_messages_ids (list): A list of all message ids in the channel.
         parsed_messages (list): A list of all parsed messages in the channel.
         invite_link (str): The invite link of the channel.
         admins (list): A list of all admins in the channel.
@@ -41,6 +42,7 @@ class Channel:
     invite_link = ""
     admins = []
     user_count = 0
+    all_messages_ids = []
 
     def __init__(
         self,
@@ -50,6 +52,7 @@ class Channel:
         self.id = id
         self.token = bot_token
         self.all_messages = []
+        self.all_messages_ids = []
         self.parsed_messages = []
         self.invite_link, self.bot_permissions, self.admins, self.name = (
             self.get_chat_information()
@@ -99,6 +102,7 @@ class Channel:
             if not response.json()["ok"]:
                 continue
             all_messages.append(response.json())
+            self.all_messages_ids.append(message_id)
 
             forwarded_message_id = response.json()["result"]["message_id"]
 

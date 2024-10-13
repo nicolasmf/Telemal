@@ -1,3 +1,4 @@
+import json
 import os
 import sys
 import requests
@@ -107,6 +108,7 @@ class Bot:
             return False
         else:
             self.json_updates = new_json_updates
+            self.get_chats()
             return True
 
     def get_chats(self) -> list[str]:
@@ -415,11 +417,7 @@ class Bot:
         url = f"https://api.telegram.org/bot{self.token}/deleteMessage?chat_id={chat_id}&message_id={message_id}"
         response = requests.get(url)
 
-        if not response.json()["ok"]:
-            print(f"[-] Couldn't delete message: {message_id}")
-            return False
-
-        return True
+        return response.json()["ok"]
 
     def delete_all_messages(self, chat_id: str) -> int:
         """
@@ -432,11 +430,13 @@ class Bot:
             message_count (int): Number of messages deleted.
         """
 
-        messages = self.channels[chat_id].get_messages()
+        self.channels[chat_id].get_messages()
+        print("[+] Deleting all messages...", flush=True, end="\r")
+
         message_count = 0
-        for message in messages:
-            message_count += 1
-            self.delete_message(chat_id, message["message_id"])
+        for message in self.channels[chat_id].all_messages_ids:
+            if self.delete_message(chat_id, message):
+                message_count += 1
 
         return message_count
 
