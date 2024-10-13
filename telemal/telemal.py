@@ -2,7 +2,7 @@ import os
 import sys
 import pickle
 
-from Bot import Bot
+from .Bot import Bot
 
 LOGO = """
 ████████╗███████╗██╗     ███████╗███╗   ███╗ █████╗ ██╗     
@@ -20,13 +20,13 @@ def write_cache(bot: Bot):
 
     id = bot.token.split(":")[0]
 
-    if not os.path.exists(id):
-        os.makedirs(id)
+    if not os.path.exists(f"{id}_cache"):
+        os.makedirs(f"{id}_cache")
 
-    with open(f"{id}/bot.pkl", "wb") as file:
+    with open(f"{id}_cache/bot.pkl", "wb") as file:
         pickle.dump(bot, file)
 
-    with open(f"{id}/channels.pkl", "wb") as file:
+    with open(f"{id}_cache/channels.pkl", "wb") as file:
         pickle.dump(bot.channels, file)
 
 
@@ -34,11 +34,11 @@ def read_cache(token: str):
 
     id = token.split(":")[0]
 
-    if os.path.exists(id):
-        with open(f"{id}/bot.pkl", "rb") as file:
+    if os.path.exists(f"{id}_cache"):
+        with open(f"{id}_cache/bot.pkl", "rb") as file:
             bot = pickle.load(file)
 
-        with open(f"{id}/channels.pkl", "rb") as file:
+        with open(f"{id}_cache/channels.pkl", "rb") as file:
             bot.channels = pickle.load(file)
 
         return bot

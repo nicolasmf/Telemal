@@ -4,3 +4,6 @@ TODO.txt
 telemal/__pycache__
 .vscode
 forward_responses.txt
+build
+dist
+telemal.egg-info

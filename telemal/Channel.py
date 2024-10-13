@@ -1,6 +1,6 @@
 import requests
 
-from User import User
+from .User import User
 from datetime import datetime
 
 
