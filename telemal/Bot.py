@@ -49,7 +49,6 @@ class Bot:
     def __init__(self, token):
         self.token = token
 
-        self.update()
         self.get_me(token)
         self.get_chats()
 
