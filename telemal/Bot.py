@@ -476,7 +476,7 @@ class Bot:
         if not os.path.exists(chat_id.replace("-", "")):
             os.makedirs(chat_id.replace("-", ""))
 
-        with open(f"./{chat_id.replace("-", "")}/messages.txt", "w") as file:
+        with open(f"./{chat_id.replace('-', '')}/messages.txt", "w") as file:
             for message in messages:
                 file.write(message + "\n")
 
