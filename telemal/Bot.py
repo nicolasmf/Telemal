@@ -49,7 +49,7 @@ class Bot:
     def __init__(self, token):
         self.token = token
 
-        self.get_updates(token)
+        self.update()
         self.get_me(token)
         self.get_chats()
 
@@ -88,8 +88,6 @@ class Bot:
         url = f"https://api.telegram.org/bot{token}/getUpdates"
         response = requests.get(url)
 
-        self.json_updates = response.json()
-
         return response.json()
 
     def update(self) -> bool:
@@ -106,7 +104,6 @@ class Bot:
             return False
         else:
             self.json_updates = new_json_updates
-            self.get_chats()
             self.get_chats()
             return True
 
