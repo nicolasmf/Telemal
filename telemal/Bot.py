@@ -480,6 +480,6 @@ class Bot:
 
         with open(f"./{chat_id}/messages.txt", "w") as file:
             for message in messages:
-                file.write(message)
+                file.write(message + "\n")
 
         return True

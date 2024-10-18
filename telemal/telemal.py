@@ -275,8 +275,10 @@ def channel_menu(bot: Bot, chat_id: str | None = None, chat_name: str | None = N
                 print(f"[+] {messages_count} messages deleted.")
 
         elif case == "6":
-            bot.export_text_messages(chat_id)
-            print(f"[+] Messages exported to ./{chat_id}/messages.txt.")
+            bot.export_text_messages(chat_id.replace("-", "_"))
+            print(
+                f"[+] Messages exported to ./{chat_id.replace("-", "_")}/messages.txt."
+            )
 
         elif case == "7":
             if bot.leave_channel(chat_id):
