@@ -278,8 +278,8 @@ class Bot:
 
         download_url = f"https://api.telegram.org/file/bot{self.token}/{file_path}"
 
-        if not os.path.exists(chat_id):
-            os.makedirs(chat_id)
+        if not os.path.exists(chat_id.replace("-", "")):
+            os.makedirs(chat_id.replace("-", ""))
 
         try:
             response = requests.get(download_url)
