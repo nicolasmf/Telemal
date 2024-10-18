@@ -279,7 +279,7 @@ def channel_menu(bot: Bot, chat_id: str | None = None, chat_name: str | None = N
         elif case == "6":
             bot.export_text_messages(chat_id)
             print(
-                f"[+] Messages exported to ./{chat_id.replace("-", "")}/messages.txt."
+                f"[+] Messages exported to ./{chat_id.replace('-', '')}/messages.txt."
             )
 
         elif case == "7":
