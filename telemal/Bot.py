@@ -281,9 +281,11 @@ class Bot:
             response = requests.get(download_url)
             response.raise_for_status()
 
-            with open(f"./{chat_id.replace("-", "")}/{file_name}", "wb") as file:
+            with open(f"./{chat_id.replace('-', '')}/{file_name}", "wb") as file:
                 file.write(response.content)
-            print(f"File downloaded successfully: ./{chat_id}/{file_name}")
+            print(
+                f"File downloaded successfully: ./{chat_id.replace('-', '')}/{file_name}"
+            )
         except Exception as e:
             print(f"Error downloading file: {e}")
 
