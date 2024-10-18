@@ -81,6 +81,8 @@ def main_menu(token: str | None = None, bot: Bot | None = None):
 
     print(f"[+] Bot {bot.first_name} ({bot.username}) loaded successfully.")
 
+    bot.update()
+
     if bot.chat_count > 1:
         print(f"\033[1m[!] Bot is part of {bot.chat_count} channels\033[0m\n")
 
