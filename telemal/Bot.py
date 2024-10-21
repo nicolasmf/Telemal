@@ -110,9 +110,11 @@ class Bot:
         """
         Get list of chats bot is part of.
         """
-
-        if not self.json_updates["ok"]:
-            print("[-] Error: Couldn't load chat history.")
+        try:
+            if not self.json_updates["ok"]:
+                print("[-] Error: Couldn't load chat history.")
+                return [""]
+        except TypeError:
             return [""]
 
         chats = []
