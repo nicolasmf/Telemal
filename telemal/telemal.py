@@ -1,10 +1,21 @@
 import os
 import sys
 import pickle
+import program
 
 from .Bot import Bot
 
-LOGO = """
+if "android" in program.program:
+    LOGO = """
+▗▄▄▄▖▗▄▄▄▖▗▖   ▗▄▄▄▖▗▖  ▗▖ ▗▄▖ ▗▖   
+  █  ▐▌   ▐▌   ▐▌   ▐▛▚▞▜▌▐▌ ▐▌▐▌   
+  █  ▐▛▀▀▘▐▌   ▐▛▀▀▘▐▌  ▐▌▐▛▀▜▌▐▌   
+  █  ▐▙▄▄▖▐▙▄▄▖▐▙▄▄▖▐▌  ▐▌▐▌ ▐▌▐▙▄▄▖ V1.2
+  Telegram Bot Control Toolkit  
+                            
+"""
+else:
+    LOGO = """
 ████████╗███████╗██╗     ███████╗███╗   ███╗ █████╗ ██╗     
 ╚══██╔══╝██╔════╝██║     ██╔════╝████╗ ████║██╔══██╗██║     
    ██║   █████╗  ██║     █████╗  ██╔████╔██║███████║██║     
