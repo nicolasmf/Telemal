@@ -1,11 +1,11 @@
 import os
 import sys
 import pickle
-import program
+import platform
 
 from .Bot import Bot
 
-if "android" in program.program:
+if "android" in platform.platform():
     LOGO = """
 ▗▄▄▄▖▗▄▄▄▖▗▖   ▗▄▄▄▖▗▖  ▗▖ ▗▄▖ ▗▖   
   █  ▐▌   ▐▌   ▐▌   ▐▛▚▞▜▌▐▌ ▐▌▐▌   
