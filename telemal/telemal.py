@@ -52,6 +52,9 @@ def read_cache(token: str):
         with open(f"{id}_cache/channels.pkl", "rb") as file:
             bot.channels = pickle.load(file)
 
+        # Check if bot still exists
+        bot.get_me()
+
         return bot
 
 
