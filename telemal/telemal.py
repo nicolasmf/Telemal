@@ -100,7 +100,8 @@ def main_menu(token: str | None = None, bot: Bot | None = None):
         for i, chat in enumerate(bot.chat_list):
             print(f"{i+1}. Go to channel : {chat.split(' > ')[0]}")
 
-        print(f"{bot.chat_count + 1}. Get channels updates.")
+        print(f"{bot.chat_count + 1}. Enter a channel ID.")
+        print(f"{bot.chat_count + 2}. Get channels updates.")
         print("0. Exit and write cache.\n")
 
         case = input(">>> ")
@@ -113,6 +114,12 @@ def main_menu(token: str | None = None, bot: Bot | None = None):
             chat_name = bot.chat_list[int(case) - 1].split(" > ")[0]
             channel_menu(bot, chat_id, chat_name)
         elif case == str(bot.chat_count + 1):
+            chat_id = input("[+] Enter channel ID > ")
+            if not bot.is_in_channel(chat_id):
+                print("[-] Error: Bot is not in this channel.")
+            else:
+                channel_menu(bot, chat_id)
+        elif case == str(bot.chat_count + 2):
             if bot.update():
                 print("[+] Channels updated successfully.")
             else:
@@ -121,7 +128,8 @@ def main_menu(token: str | None = None, bot: Bot | None = None):
             print("[!] Invalid option.")
     elif bot.chat_count == 1:
         print(f"\n1. Go to channel: {bot.chat_list[0].split(' > ')[0]}")
-        print("2. Get channels updates.")
+        print("2. Enter a channel ID.")
+        print("3. Get channels updates.")
         print("0. Exit and write cache.")
 
         case = input("\n>>> ")
@@ -129,6 +137,12 @@ def main_menu(token: str | None = None, bot: Bot | None = None):
         if case == "1":
             channel_menu(bot)
         elif case == "2":
+            chat_id = input("[+] Enter channel ID > ")
+            if not bot.is_in_channel(chat_id):
+                print("[-] Error: Bot is not in this channel.")
+            else:
+                channel_menu(bot, chat_id)
+        elif case == "3":
             if bot.update():
                 print("[+] Channels updated successfully.")
             else:
