@@ -124,13 +124,13 @@ class Bot:
                 continue
 
             chats.append(
-                f'{chat["message"]["chat"].get("title") or "Private Chat"} > {chat["message"]["chat"]["id"]}'
+                f'{chat["message"]["chat"].get("title") or "Private Chat"}$$$$${chat["message"]["chat"]["id"]}'
             )
 
-        chats = sorted(set(chats), key=lambda x: x.split(" > ")[0])
+        chats = sorted(set(chats), key=lambda x: x.split("$$$$$")[0])
 
         for chat in chats:
-            self.add_channel(chat.split(" > ")[1])
+            self.add_channel(chat.split("$$$$$")[1])
 
         self.chat_list = chats
         self.chat_count = len(chats)
@@ -147,7 +147,7 @@ class Bot:
             False: If channel is already in bot's channels.
         """
 
-        if self.is_in_channel(chat_id) and chat_id not in self.channels:
+        if chat_id not in self.channels:
             self.channels[chat_id] = Channel(chat_id, self.token)
             return True
         else:
