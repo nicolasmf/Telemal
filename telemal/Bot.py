@@ -118,6 +118,7 @@ class Bot:
             return [""]
 
         chats = []
+        left_chats = []
 
         for chat in self.json_updates["result"]:
             if "message" not in chat:
@@ -127,7 +128,13 @@ class Bot:
                 f'{chat["message"]["chat"].get("title") or "Private Chat"}$$$$${chat["message"]["chat"]["id"]}'
             )
 
+            if "left_chat_member" in chat["message"]:
+                left_chats.append(chat["message"]["chat"]["id"])
+
         chats = sorted(set(chats), key=lambda x: x.split("$$$$$")[0])
+        for chat in left_chats:
+            if chat in chats:
+                chats.remove(chat)
 
         for chat in chats:
             self.add_channel(chat.split("$$$$$")[1])
@@ -147,7 +154,7 @@ class Bot:
             False: If channel is already in bot's channels.
         """
 
-        if chat_id not in self.channels:
+        if self.is_in_channel(chat_id) and chat_id not in self.channels:
             self.channels[chat_id] = Channel(chat_id, self.token)
             return True
         else:
