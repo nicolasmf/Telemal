@@ -129,7 +129,9 @@ class Bot:
             )
 
             if "left_chat_member" in chat["message"]:
-                left_chats.append(chat["message"]["chat"]["id"])
+                left_chats.append(
+                    f'{chat["message"]["chat"].get("title") or "Private Chat"}$$$$${chat["message"]["chat"]["id"]}'
+                )
 
         chats = sorted(set(chats), key=lambda x: x.split("$$$$$")[0])
         for chat in left_chats:
