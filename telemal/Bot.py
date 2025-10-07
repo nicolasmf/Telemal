@@ -318,19 +318,7 @@ class Bot:
 
             if file_type == "documents":
 
-                if "photo" in chat["result"]:
-                    continue
-
-                elif "animation" in chat["result"]:
-                    continue
-
-                elif "voice" in chat["result"]:
-                    continue
-
-                elif "video" in chat["result"]:
-                    continue
-
-                elif "document" in chat["result"]:
+                if "document" in chat["result"]:
                     document = chat["result"]["document"]
                     file_informations.append(
                         [document["file_id"], document["file_name"], None]

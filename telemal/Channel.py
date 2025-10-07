@@ -180,7 +180,7 @@ class Channel:
             message = f"{date} - {username}: [Sticker]"
 
         elif "video" in json_response["result"]:
-            message = f"{date} - {username}: [Video - {json_response['message']['video']['duration']}s]"
+            message = f"{date} - {username}: [Video - {json_response['result']['video']['duration']}s]"
 
         elif "document" in json_response["result"]:
             message = f'{date} - {username}: [{json_response["result"]["document"]["file_name"]}] {json_response["result"].get("caption") or ""}'
