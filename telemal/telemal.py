@@ -249,6 +249,72 @@ def channel_menu(bot: Bot, chat_id: str | None = None, chat_name: str | None = N
         else:
             print("[!] Invalid option.")
 
+    elif chat_name == "Private Chat":
+        print(f"[Channel: {chat_name}]\n")
+
+        print_channel_informations(bot, chat_id)
+
+        print("")
+
+        print("1. List all messages.")
+        print("2. Send a message.")
+        print("3. Send a file.")
+        print("4. Download files.")
+        print("5. Delete all messages.")
+        print("6. Export all text messages.")
+        print("0. Go back.")
+
+        case = input("\n>>> ")
+
+        if case == "1":
+            chat_history(bot, chat_id)
+
+        elif case == "2":
+            message = input("[+] Enter message > ")
+
+            if bot.send_message(chat_id, message):
+                print("[+] Message sent successfully.")
+            else:
+                print("[-] Error: Message could not be sent.")
+
+        elif case == "3":
+            try:
+                file_path = input("Enter the path of the file to send > ")
+                if bot.send_file(chat_id, file_path):
+                    print("[+] File sent successfully.")
+                else:
+                    print("[-] Error: File could not be sent.")
+            except FileNotFoundError:
+                print("[-] Error: File not found.")
+
+        elif case == "4":
+            file_menu(bot, chat_id, chat_name)
+
+        elif case == "5":
+            print(
+                "[?] This will only delete messages sent less than 48 hours ago, because of Telegram's limitations."
+            )
+
+            messages_count = bot.delete_all_messages(chat_id)
+            remove_last_lines()
+
+            if messages_count == 0:
+                print("[-] No messages deleted.")
+            else:
+                print(f"[+] {messages_count} messages deleted.")
+
+        elif case == "6":
+            bot.export_text_messages(chat_id)
+            print(
+                f"[+] Messages exported to ./{chat_id.replace('-', '')}/messages.txt."
+            )
+
+        elif case == "0":
+            main_menu(bot.token, bot)
+
+        else:
+            print("[!] Invalid option.")
+
     else:
         print(f"[Channel: {chat_name}]\n")
 
