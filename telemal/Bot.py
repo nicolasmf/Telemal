@@ -196,8 +196,11 @@ class Bot:
 
         url = f"https://api.telegram.org/bot{self.token}/getChat?chat_id={chat_id}"
         response = requests.get(url)
-        if response.json()["result"]["type"] == "private":
-            return True
+        try:
+            if response.json()["result"]["type"] == "private":
+                return True
+        except KeyError:
+            return False
 
         url = f"https://api.telegram.org/bot{self.token}/getChatAdministrators?chat_id={chat_id}"
         response = requests.get(url)
