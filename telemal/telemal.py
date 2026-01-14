@@ -185,7 +185,7 @@ def main_menu(token: str | None = None, bot: Bot | None = None):
     main_menu(token, bot)
 
 
-def print_channel_informations(bot: Bot, chat_id: str):
+def print_channel_informations(bot: Bot, chat_id: str, is_private: bool):
 
     invite_link = bot.channels[chat_id].invite_link
     permissions = bot.channels[chat_id].bot_permissions
@@ -196,12 +196,15 @@ def print_channel_informations(bot: Bot, chat_id: str):
             permissions[index] = f"\033[1m{permission}\033[0m"
 
     print(f"[+] Channel ID: {chat_id}")
-    print(f"[+] Invite Link: {invite_link}")
 
-    print(f"[+] Permissions:", end=" ")
-    print(*permissions, sep=", ")
+    if not is_private:
 
-    print(f"\n[+] Users: {bot.channels[chat_id].user_count}")
+        print(f"[+] Invite Link: {invite_link}")
+
+        print(f"[+] Permissions:", end=" ")
+        print(*permissions, sep=", ")
+
+    print(f"\n[+] Users: {int(bot.channels[chat_id].user_count) - 1}")
 
     print(f"[+] Administrators: {len(admins)}")
     for admin in admins:
@@ -252,7 +255,7 @@ def channel_menu(bot: Bot, chat_id: str | None = None, chat_name: str | None = N
     elif chat_name == "Private Chat":
         print(f"[Channel: {chat_name}]\n")
 
-        print_channel_informations(bot, chat_id)
+        print_channel_informations(bot, chat_id, is_private=True)
 
         print("")
 
@@ -318,7 +321,7 @@ def channel_menu(bot: Bot, chat_id: str | None = None, chat_name: str | None = N
     else:
         print(f"[Channel: {chat_name}]\n")
 
-        print_channel_informations(bot, chat_id)
+        print_channel_informations(bot, chat_id, is_private=False)
 
         print("")
 
