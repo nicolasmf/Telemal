@@ -229,24 +229,12 @@ def channel_menu(bot: Bot, chat_id: str | None = None, chat_name: str | None = N
 
         print(f"[+] Channel ID: {chat_id}\n")
 
-        print("1. List all messages.")
-        print("2. Download files.")
-        print("3. Export all text messages.")
         print("0. Go back.")
 
         case = input("\n>>> ")
         print()
 
-        if case == "1":
-            print("Not implemented yet.")
-
-        elif case == "2":
-            print("Not implemented yet.")
-
-        elif case == "3":
-            print("Not implemented yet.")
-
-        elif case == "0":
+        if case == "0":
             main_menu(bot.token, bot)
 
         else:
