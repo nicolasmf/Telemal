@@ -13,6 +13,9 @@ setup(
     author="TA1GA",
     license="MIT",
     packages=find_packages(),
+    install_requires=[
+        "requests",
+    ],
     entry_points={
         "console_scripts": ["telemal=telemal.telemal:main"],
     },
